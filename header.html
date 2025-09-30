@@ -675,7 +675,7 @@
         return `rgb(${r}, ${g}, ${b})`;
       }
 
-      function buildScoreboard({ totalSubdomains, liveSubs, totalHttpx, loginFoundCount }) {
+      function buildScoreboard({ totalSubdomains, liveSubs, totalhttpx-toolkit, loginFoundCount }) {
         const sb = document.getElementById("scoreboard");
         sb.innerHTML = `
           <div class="score-card">
@@ -687,7 +687,7 @@
             <p>Total Live Assets</p>
           </div>
           <div class="score-card">
-            <h2>${totalHttpx}</h2>
+            <h2>${totalhttpx-toolkit}</h2>
             <p>Application Endpoints</p>
           </div>
           <div class="score-card">
@@ -779,9 +779,9 @@
         }
       }
 
-      function buildCDNStackedChart(httpxData) {
+      function buildCDNStackedChart(httpx-toolkitData) {
         const cdnMap = {};
-        httpxData.forEach(record => {
+        httpx-toolkitData.forEach(record => {
           let cdnName = record.cdn_name && record.cdn_name.trim();
           let cdnType = record.cdn_type && record.cdn_type.trim();
           if (!cdnName || cdnName === "N/A") return;
@@ -811,9 +811,9 @@
         });
       }
 
-      function buildDomainCountChart(httpxData) {
+      function buildDomainCountChart(httpx-toolkitData) {
         const domainCount = {};
-        httpxData.forEach(h => {
+        httpx-toolkitData.forEach(h => {
           if (h.url && h.url !== "N/A") {
             const domain = (h.input || "").split(":")[0];
             domainCount[domain] = (domainCount[domain] || 0) + 1;
@@ -894,11 +894,11 @@
         });
       }
 
-      function buildHeadersChart(httpxData, secMapUrlParam) {
+      function buildHeadersChart(httpx-toolkitData, secMapUrlParam) {
         let hstsPresent = 0, hstsMissing = 0, xfoPresent = 0, xfoMissing = 0,
             cspPresent = 0, cspMissing = 0, xssPresent = 0, xssMissing = 0,
             rpPresent = 0, rpMissing = 0, ppPresent = 0, ppMissing = 0;
-        httpxData.forEach(record => {
+        httpx-toolkitData.forEach(record => {
           const sec = secMapUrlParam[record.url] || {};
           const hsts = (sec["Strict-Transport-Security"] || "").trim();
           hsts && hsts.toLowerCase() !== "n/a" && hsts.toLowerCase() !== "false" ? hstsPresent++ : hstsMissing++;
