@@ -449,7 +449,8 @@
               <th><select id="rp-filter"><option value="">All</option></select></th>
               <th><select id="pp-filter"><option value="">All</option></select></th>
               <th><select id="ports-services-filter"><option value="">All</option></select></th>
-              <th><select id="crawledlinks-filter"><option value="">All</option></select></th>
+              <th><select id="crawledlinks-filter"><option value="">All</option></select>
+              </th>
             </tr>
           </thead>
           <tbody id="report-table-body"></tbody>
@@ -675,7 +676,7 @@
         return `rgb(${r}, ${g}, ${b})`;
       }
 
-      function buildScoreboard({ totalSubdomains, liveSubs, totalhttpx-toolkit, loginFoundCount }) {
+      function buildScoreboard({ totalSubdomains, liveSubs, totalHttpxToolkit, loginFoundCount }) { // <<< FIXED: totalhttpx-toolkit -> totalHttpxToolkit
         const sb = document.getElementById("scoreboard");
         sb.innerHTML = `
           <div class="score-card">
@@ -687,7 +688,7 @@
             <p>Total Live Assets</p>
           </div>
           <div class="score-card">
-            <h2>${totalhttpx-toolkit}</h2>
+            <h2>${totalHttpxToolkit}</h2> <!-- <<< FIXED: totalhttpx-toolkit -> totalHttpxToolkit -->
             <p>Application Endpoints</p>
           </div>
           <div class="score-card">
@@ -779,9 +780,9 @@
         }
       }
 
-      function buildCDNStackedChart(httpx-toolkitData) {
+      function buildCDNStackedChart(httpxToolkitData) { // <<< FIXED: httpx-toolkitData -> httpxToolkitData
         const cdnMap = {};
-        httpx-toolkitData.forEach(record => {
+        httpxToolkitData.forEach(record => { // <<< FIXED: httpx-toolkitData -> httpxToolkitData
           let cdnName = record.cdn_name && record.cdn_name.trim();
           let cdnType = record.cdn_type && record.cdn_type.trim();
           if (!cdnName || cdnName === "N/A") return;
@@ -811,9 +812,9 @@
         });
       }
 
-      function buildDomainCountChart(httpx-toolkitData) {
+      function buildDomainCountChart(httpxToolkitData) { // <<< FIXED: httpx-toolkitData -> httpxToolkitData
         const domainCount = {};
-        httpx-toolkitData.forEach(h => {
+        httpxToolkitData.forEach(h => { // <<< FIXED: httpx-toolkitData -> httpxToolkitData
           if (h.url && h.url !== "N/A") {
             const domain = (h.input || "").split(":")[0];
             domainCount[domain] = (domainCount[domain] || 0) + 1;
@@ -894,11 +895,11 @@
         });
       }
 
-      function buildHeadersChart(httpx-toolkitData, secMapUrlParam) {
+      function buildHeadersChart(httpxToolkitData, secMapUrlParam) { // <<< FIXED: httpx-toolkitData -> httpxToolkitData
         let hstsPresent = 0, hstsMissing = 0, xfoPresent = 0, xfoMissing = 0,
             cspPresent = 0, cspMissing = 0, xssPresent = 0, xssMissing = 0,
             rpPresent = 0, rpMissing = 0, ppPresent = 0, ppMissing = 0;
-        httpx-toolkitData.forEach(record => {
+        httpxToolkitData.forEach(record => { // <<< FIXED: httpx-toolkitData -> httpxToolkitData
           const sec = secMapUrlParam[record.url] || {};
           const hsts = (sec["Strict-Transport-Security"] || "").trim();
           hsts && hsts.toLowerCase() !== "n/a" && hsts.toLowerCase() !== "false" ? hstsPresent++ : hstsMissing++;
@@ -1471,7 +1472,7 @@
         fillSelectOptions("csp-filter", [...uniqueCols[32]]);
         fillSelectOptions("xss-filter", [...uniqueCols[33]]);
         fillSelectOptions("rp-filter", [...uniqueCols[34]]);
-        fillSelectOptions("pp-filter", [...uniqueCols[35]]);
+          fillSelectOptions("pp-filter", [...uniqueCols[35]]);
         fillSelectOptions("ports-services-filter", [...uniqueCols[36]]);
         fillSelectOptions("crawledlinks-filter", [...uniqueCols[37]]);
       }
@@ -1487,3 +1488,5 @@
       // Async data loading and report building
       async function loadData() {
         try {
+
+}
