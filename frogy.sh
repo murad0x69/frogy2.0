@@ -10,7 +10,7 @@ SUBFINDER_COUNT=0
 ASSETFINDER_COUNT=0
 CRT_COUNT=0
 DNSX_LIVE_COUNT=0
-httpx-toolkit_LIVE_COUNT=0
+HTTPX_TOOLKIT_LIVE_COUNT=0  # <<< FIXED: Uses underscores (is now valid Bash)
 LOGIN_FOUND_COUNT=0
 GAU_COUNT=0
 
@@ -61,7 +61,7 @@ USE_SUBFINDER="true"
 USE_ASSETFINDER="true"
 USE_DNSX="true"
 USE_NAABU="true"
-USE_httpx-toolkit="true"
+USE_HTTPX_TOOLKIT="true"  # <<< FIXED: Uses underscores
 USE_GAU="true"
 
 
@@ -269,8 +269,8 @@ run_naabu() {
 # Function: run_httpx-toolkit
 # Purpose: Run httpx-toolkit to probe live web endpoints using the ports identified.
 ##############################################
-run_httpx-toolkit() {
-  if [[ "$USE_httpx-toolkit" == "true" ]]; then
+run_httpx_toolkit() { # <<< FUNCTION NAME CORRECTED (no hyphen)
+  if [[ "$USE_HTTPX_TOOLKIT" == "true" ]]; then # <<< VARIABLE NAME CORRECTED
     info "[8/15] Running httpx-toolkit..."
     local final_urls_ports="$RUN_DIR/final_urls_and_ports.txt"
 
@@ -282,7 +282,7 @@ run_httpx-toolkit() {
           >/dev/null 2>&1 || true
 
     # Count live endpoints
-    httpx-toolkit_LIVE_COUNT=$(wc -l < "$RUN_DIR/httpx-toolkit.json" || echo 0)
+    HTTPX_TOOLKIT_LIVE_COUNT=$(wc -l < "$RUN_DIR/httpx-toolkit.json" || echo 0) # <<< Updated Counter
 
     # Ensure the default output dirs exist
     mkdir -p output/screenshot output/response
@@ -334,16 +334,16 @@ gather_screenshots() {
 ##############################################
 run_katana() {
   info "[9/15] Crawling links with Katana..."
-  local httpx-toolkit_file="$RUN_DIR/httpx-toolkit.json"
+  local httpx_toolkit_file="$RUN_DIR/httpx-toolkit.json" # <<< VARIABLE NAME CORRECTED
   local output_file="$RUN_DIR/katana_links.json"
 
-  if [ ! -s "$httpx-toolkit_file" ]; then
+  if [ ! -s "$httpx_toolkit_file" ]; then
     echo "{}" > "$output_file"
     return
   fi
 
   local seeds="$RUN_DIR/katana_seeds.txt"
-  jq -r '.url' "$httpx-toolkit_file" | sort -u > "$seeds"
+  jq -r '.url' "$httpx_toolkit_file" | sort -u > "$seeds" # <<< VARIABLE NAME CORRECTED
 
   # JSON object start
   echo "{" > "$output_file"
@@ -381,7 +381,7 @@ run_katana() {
 ##############################################
 run_login_detection() {
   info "[10/15] Detecting Login panels..."
-  local input_file="$RUN_DIR/httpx-toolkit.json"
+  local input_file="$RUN_DIR/httpx-toolkit.json" # <<< VARIABLE NAME CORRECTED
   local output_file="$RUN_DIR/login.json"
 
   # Exit if input file or jq is not available.
@@ -767,8 +767,6 @@ combine_json() {
   local outfile="$2"
   if [[ -f "$infile" ]]; then
     jq -cs . "$infile" > "$outfile" 2>/dev/null || echo "[]" > "$outfile"
-  else
-    echo "[]" > "$outfile"
   fi
 }
 
@@ -839,14 +837,14 @@ run_colleague_identification() {
 # Function: build_html_report
 # Purpose: Combine the various JSON outputs and generate the final HTML report.
 # Detailed Explanation:
-#   - Combines JSON files from dnsx, naabu, and httpx-toolkit.
-#   - Moves merged JSON files into place.
-#   - Writes the complete HTML (including embedded JavaScript and CSS) to the report file.
+#    - Combines JSON files from dnsx, naabu, and httpx-toolkit.
+#    - Moves merged JSON files into place.
+#    - Writes the complete HTML (including embedded JavaScript and CSS) to the report file.
 ##############################################
 build_html_report() {
   info "[14/15] Building HTML report with analytics..."
   combine_json "$RUN_DIR/dnsx.json"   "$RUN_DIR/dnsx_merged.json"
-  combine_json "$RUN_DIR/naabu.json"    "$RUN_DIR/naabu_merged.json"
+  combine_json "$RUN_DIR/naabu.json"   "$RUN_DIR/naabu_merged.json"
   combine_json "$RUN_DIR/httpx-toolkit.json"    "$RUN_DIR/httpx-toolkit_merged.json"
   mv "$RUN_DIR/dnsx_merged.json"  "$RUN_DIR/dnsx.json"
   mv "$RUN_DIR/naabu_merged.json" "$RUN_DIR/naabu.json"
@@ -859,7 +857,7 @@ build_html_report() {
   echo -n "const naabuData = " >> report.html
   cat $RUN_DIR/naabu.json | tr -d "\n" >> report.html
   echo "" >> report.html
-  echo -n "const httpx-toolkitData = " >> report.html
+  echo -n "const httpxToolkitData = " >> report.html # <<< JS Variable name corrected
   cat $RUN_DIR/httpx-toolkit.json | tr -d "\n" >> report.html
   echo "" >> report.html
   echo -n "const loginData = " >> report.html
@@ -905,7 +903,7 @@ show_summary() {
   printf "%-28s %s\n" "Total assets pre-deduplication:" "$combined_pre_dedup"
   printf "%-28s %s\n" "Final assets post-deduplication:" "$final_subdomains_count"
   printf "%-28s %s\n" "Total Live assets:" "$DNSX_LIVE_COUNT"
-  printf "%-28s %s\n" "Total Live websites:" "$httpx-toolkit_LIVE_COUNT"
+  printf "%-28s %s\n" "Total Live websites:" "$HTTPX_TOOLKIT_LIVE_COUNT" # <<< Updated Variable
   echo "============================================="
 }
 ##############################################
@@ -927,10 +925,10 @@ main() {
   rm -f "$ALL_TEMP"
   run_dnsx
   run_naabu
-  run_httpx-toolkit
+  run_httpx_toolkit # <<< FUNCTION NAME CORRECTED
   run_katana
-  mv output/response $RUN_DIR/
-  mv output/screenshot $RUN_DIR/
+  mv output/response "$RUN_DIR/"
+  mv output/screenshot "$RUN_DIR/"
   gather_screenshots
   run_login_detection
   run_security_compliance
