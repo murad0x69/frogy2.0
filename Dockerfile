@@ -15,13 +15,17 @@ ARG HTTPX_VER=latest
 ARG GAU_VER=latest
 ARG KATANA_VER=latest
 
+# Install all binaries. Note: httpx is installed with its default name here.
 RUN go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@${SUBFINDER_VER} \
- && go install github.com/tomnomnom/assetfinder@${ASSETFINDER_VER} \
- && go install github.com/projectdiscovery/dnsx/cmd/dnsx@${DNSX_VER} \
- && go install github.com/projectdiscovery/naabu/v2/cmd/naabu@${NAABU_VER} \
- && go install github.com/projectdiscovery/httpx/cmd/httpx@${HTTPX_VER} \
- && go install github.com/lc/gau/v2/cmd/gau@${GAU_VER} \
- && go install github.com/projectdiscovery/katana/cmd/katana@${KATANA_VER}
+  && go install github.com/tomnomnom/assetfinder@${ASSETFINDER_VER} \
+  && go install github.com/projectdiscovery/dnsx/cmd/dnsx@${DNSX_VER} \
+  && go install github.com/projectdiscovery/naabu/v2/cmd/naabu@${NAABU_VER} \
+  && go install github.com/projectdiscovery/httpx/cmd/httpx@${HTTPX_VER} \
+  && go install github.com/lc/gau/v2/cmd/gau@${GAU_VER} \
+  && go install github.com/projectdiscovery/katana/cmd/katana@${KATANA_VER}
+
+# RENAME STEP: Rename the installed binary from 'httpx' to 'httpx-toolkit'
+RUN mv "$GOBIN/httpx" "$GOBIN/httpx-toolkit"
 
 FROM ubuntu:24.04
 
@@ -36,7 +40,7 @@ WORKDIR /opt/frogy
 COPY . .
 
 RUN sed -i 's/\r$//' frogy.sh || true \
- && chmod 0755 frogy.sh
+  && chmod 0755 frogy.sh
 
 COPY --from=builder /out/* /usr/local/bin/
 ENV PATH=/usr/local/bin:$PATH
